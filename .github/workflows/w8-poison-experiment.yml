@@ -17,11 +17,9 @@ jobs:
         run: |
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > key.pem
           chmod 600 key.pem
+          pip install -r requirements.txt
       - name: run unit tests
         run: |
-          ssh -i key.pem -o StrictHostKeyChecking=no rsiitm0_gmail_com@34.123.98.187 << 'EOF'
-          cd /home/rsiitm0_gmail_com/week8
-          source /home/rsiitm0_gmail_com/.env/bin/activate
           python poison.py
           python train.py --data iris.csv --model iris_model.joblib
           python train.py --data iris_5.csv --model iris_model_5.joblib
@@ -31,14 +29,10 @@ jobs:
           python test.py --data iris_5.csv --model iris_model_5.joblib --report iris_report_5.csv --epoch 10 --ratio 0.3
           python test.py --data iris_10.csv --model iris_model_10.joblib --report iris_report_10.csv --epoch 10 --ratio 0.3
           python test.py --data iris_50.csv --model iris_model_50.joblib --report iris_report_50.csv --epoch 10 --ratio 0.3
-          EOF
       - name: Create CML Report
         env:
           REPO_TOKEN: ${{ secrets.GITHUB_TOKEN}}
         run: |
-          ssh -i key.pem -o StrictHostKeyChecking=no rsiitm0_gmail_com@34.123.98.187 << 'EOF'
-          cd /home/rsiitm0_gmail_com/week8
-          source /home/rsiitm0_gmail_com/.env/bin/activate
           touch report.md
           echo "Result" >> report.md
           echo "No poison" >> report.md
@@ -46,4 +40,3 @@ jobs:
           echo "5% poison" >> report.md
           cat "iris_report_5.csv" >> report.md
           cml comment create --publish report.md
-          EOF
