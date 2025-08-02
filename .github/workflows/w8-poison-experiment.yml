@@ -16,9 +16,7 @@ jobs:
       - name: setup ssh key
         run: |
           pip install -r requirements.txt
-      - name: run mlflow
-        run: |
-          python mlflow-run.py --percentage_file percentages.txt
+
       - name: run unit tests
         run: |
           for i in $(cat percentages.txt); do python poison.py --percent $i; done ;
@@ -26,6 +24,9 @@ jobs:
           for i in $(cat percentages.txt); do python train.py --data iris_${i}.csv --model iris_model_${i}.joblib; done ;
           python test.py --data iris.csv --model iris_model.joblib --report iris_report.csv --epoch 10 --ratio 0.2
           for i in $(cat percentages.txt); do python test.py --data iris_${i}.csv --model iris_model_${i}.joblib --report iris_report_${i}.csv --epoch 10 --ratio 0.2; done ;
+      - name: run mlflow
+        run: |
+          python mlflow-run.py --percentage_file percentages.txt
       - name: Create CML Report
         env:
           REPO_TOKEN: ${{ secrets.GITHUB_TOKEN}}
