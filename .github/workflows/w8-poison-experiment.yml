@@ -16,6 +16,9 @@ jobs:
       - name: setup ssh key
         run: |
           pip install -r requirements.txt
+      - name: run mlflow
+        run: |
+          python mlflow-run.py --percentage_file percentages.txt
       - name: run unit tests
         run: |
           for i in $(cat percentages.txt); do python poison.py --percent $i; done ;
