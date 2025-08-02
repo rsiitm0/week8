@@ -3,9 +3,7 @@ import sys
 import pandas as pd
 import numpy as np
 from sklearn.model_selection import train_test_split
-from pandas.plotting import parallel_coordinates
-from sklearn.tree import DecisionTreeClassifier, plot_tree
-from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
+from sklearn.metrics import accuracy_score
 import joblib
 import argparse
 
@@ -21,7 +19,7 @@ data_path = args.data
 model_path = args.model
 report_path = args.report
 epoch_count = int(args.epoch)
-train_ratio = 1 - float(args.ratio)
+test_ratio = float(args.ratio)
 
 data = pd.read_csv(data_path)
 model_dt = joblib.load(model_path)
@@ -30,7 +28,7 @@ fh_report = open(report_path,'w')
 fh_report.write(f"epoch,accuracy\n")
 
 for i in (range(epoch_count)):
-  train,test = train_test_split(data,test_size=train_ratio,stratify=data['species'],random_state=i)
+  train,test = train_test_split(data,test_size=test_ratio,stratify=data['species'],random_state=i+1)
   X_test = test[['sepal_length','sepal_width','petal_length','petal_width']]
   y_test = test.species
   y_pred = model_dt.predict(X_test)
