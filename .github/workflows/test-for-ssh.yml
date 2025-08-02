@@ -1,0 +1,31 @@
+name: Iris docker Run
+on:
+  push
+permissions:
+  contents: write
+  pull-requests: write
+jobs:
+  test_docker_image_creation:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: "3.9"
+      - name: Install Google Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          project_id: mlopsprj
+          install_components: 'beta'       
+      
+      - uses: iterative/setup-cml@v2
+      - name: setup ssh key
+        run: |
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > key.pem
+          chmod 600 key.pem
+      - name: run unit tests
+        run: |
+          ssh -i key.pem -o StrictHostKeyChecking=no rsiitm0_gmail_com@34.123.98.187 << 'EOF'
+          touch /tmp/test-for-git-1
+          EOF
+
