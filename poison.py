@@ -1,5 +1,12 @@
 import pandas as pd
 import random
+import argparse
+
+parser = argparse.ArgumentParser()
+parser.add_argument('--percent',required=True)
+args = parser.parse_args()
+
+poison_percentage = int(args.percent)
 
 df_original = pd.read_csv("iris.csv")
 number_of_rows = len(df_original)
@@ -15,7 +22,7 @@ def poison(percent: int, poisoned_csv: str):
         df_poisoned.loc[i,'species'] = new_species
     df_poisoned.to_csv(poisoned_csv,index=False)
 
-poison(5,"iris_5.csv")
-poison(10,"iris_10.csv")
-poison(50,"iris_50.csv")
+
+out_poisoned_file_name = "iris_"+str(poison_percentage)+".csv"
+poison(poison_percentage,out_poisoned_file_name)
 
