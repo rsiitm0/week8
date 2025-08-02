@@ -1,8 +1,8 @@
 name: week8-poison-experiment
 on:
-  workflow_dispatch
+  push
 permissions:
-  contents: push
+  contents: write
   pull-requests: write
 jobs:
   week8-poison-experiment:
