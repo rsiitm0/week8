@@ -1,0 +1,46 @@
+name: week8-poison-experiment
+on:
+  workflow_dispatch
+permissions:
+  contents: push
+  pull-requests: write
+jobs:
+  week8-poison-experiment:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: "3.9"      
+      - uses: iterative/setup-cml@v2
+      - name: setup ssh key
+        run: |
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > key.pem
+          chmod 600 key.pem
+          pip install -r requirements.txt
+      - name: run unit tests
+        run: |
+          #python poison.py
+          #python train.py --data iris.csv --model iris_model.joblib
+          #python train.py --data iris_5.csv --model iris_model_5.joblib
+          #python train.py --data iris_10.csv --model iris_model_10.joblib
+          #python train.py --data iris_50.csv --model iris_model_50.joblib
+          #python test.py --data iris.csv --model iris_model.joblib --report iris_report.csv --epoch 10 --ratio 0.3
+          #python test.py --data iris_5.csv --model iris_model_5.joblib --report iris_report_5.csv --epoch 10 --ratio 0.3
+          #python test.py --data iris_10.csv --model iris_model_10.joblib --report iris_report_10.csv --epoch 10 --ratio 0.3
+          #python test.py --data iris_50.csv --model iris_model_50.joblib --report iris_report_50.csv --epoch 10 --ratio 0.3
+          for i in $(cat percentages.txt); do echo $i ; python poison.py --percent $i; done ;
+          python train.py --data iris.csv --model iris_model.joblib
+          for i in $(cat percentages.txt); do echo $i ; python train.py --data iris_${i}.csv --model iris_model_${i}.joblib; done ;
+          python test.py --data iris.csv --model iris_model.joblib --report iris_report.csv --epoch 10 --ratio 0.2
+          for i in $(cat percentages.txt); do echo $i ; python test.py --data iris_${i}.csv --model iris_model_${i}.joblib --report iris_report_${i}.csv --epoch 10 --ratio 0.2; done ;
+      - name: Create CML Report
+        env:
+          REPO_TOKEN: ${{ secrets.GITHUB_TOKEN}}
+        run: |
+          touch report.md
+          echo "Result" >> report.md
+          echo "No poison" >> report.md
+          cat iris_report.csv >> report.md
+          for i in $(cat percentages.txt); do echo "$i Percentages" >> report.md; cat iris_report_${i}.csv >> report.md; done;
+          cml comment create --publish report.md
