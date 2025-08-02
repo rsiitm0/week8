@@ -34,6 +34,7 @@ jobs:
           for i in $(cat percentages.txt); do echo $i ; python train.py --data iris_${i}.csv --model iris_model_${i}.joblib; done ;
           python test.py --data iris.csv --model iris_model.joblib --report iris_report.csv --epoch 10 --ratio 0.2
           for i in $(cat percentages.txt); do echo $i ; python test.py --data iris_${i}.csv --model iris_model_${i}.joblib --report iris_report_${i}.csv --epoch 10 --ratio 0.2; done ;
+          ls -l 
       - name: Create CML Report
         env:
           REPO_TOKEN: ${{ secrets.GITHUB_TOKEN}}
