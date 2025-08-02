@@ -35,7 +35,7 @@ jobs:
       - name: Create CML Report
         env:
           REPO_TOKEN: ${{ secrets.GITHUB_TOKEN}}
-        run:
+        run: |
           touch report.md
           echo "Result" >> report.md
           echo "No poison" >> report.md
