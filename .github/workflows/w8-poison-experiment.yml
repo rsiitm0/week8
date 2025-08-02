@@ -36,6 +36,9 @@ jobs:
         env:
           REPO_TOKEN: ${{ secrets.GITHUB_TOKEN}}
         run: |
+          ssh -i key.pem -o StrictHostKeyChecking=no rsiitm0_gmail_com@34.123.98.187 << 'EOF'
+          cd /home/rsiitm0_gmail_com/week8
+          source /home/rsiitm0_gmail_com/.env/bin/activate
           touch report.md
           echo "Result" >> report.md
           echo "No poison" >> report.md
@@ -43,3 +46,4 @@ jobs:
           echo "5% poison" >> report.md
           cat "iris_report_5.csv" >> report.md
           cml comment create --publish report.md
+          EOF
