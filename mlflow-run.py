@@ -17,48 +17,19 @@ mlflow_uri = "http://34.123.98.187:8000"
 mlflow.set_tracking_uri(mlflow_uri)
 client = MlflowClient(mlflow_uri)
 
-mlflow.set_experiment("Week-8-Experiment with poison-2") # experiment name
+mlflow.set_experiment("Week-8-data-poisoning") # experiment name
   
-with mlflow.start_run(run_name="poison-2"):
+with mlflow.start_run(run_name="Accuracy metrics"):
     metrics_file = "iris_report.csv"
     df_metrics = pd.read_csv(metrics_file)
-    # Log metrics to MLflow
+    # Log metrics to MLflow - without poison
     for idx, row in df_metrics.iterrows():
         mlflow.log_metric("Original - No poison", row["accuracy"], step=int(row["epoch"]))
-        # Create and save plot
-    """    
-    plt.plot(df_metrics["epoch"], df_metrics["accuracy"], marker='o', label="Accuracy")
-    plt.title("Accuracy per Epoch")
-    plt.xlabel("Epoch")
-    plt.ylabel("Accuracy")
-    plt.legend()
-    plt.grid(True)
-    plt.tight_layout()
-    plt.savefig("accuracy_plot.png")
-    plt.close()
-    # Log the plot as artifact
-    mlflow.log_artifact("accuracy_plot.png")
-    """
+        
+    # Log metrics to MLflow - with data poison
     for i in all_percentages:
         metrics_file = "iris_report_"+str(i)+".csv"
         df_metrics = pd.read_csv(metrics_file)
         # Log metrics to MLflow
         for idx, row in df_metrics.iterrows():
-            mlflow.log_metric(str(i)+" Percentage", row["accuracy"], step=int(row["epoch"]))
-        # Create and save plot
-        """
-        plt.plot(df_metrics["epoch"], df_metrics["accuracy"], marker='o', label="Accuracy")
-        plt.title("Accuracy per Epoch")
-        plt.xlabel("Epoch")
-        plt.ylabel("Accuracy")
-        plt.legend()
-        plt.grid(True)
-        plt.tight_layout()
-        plt.savefig("accuracy_plot_"+str(i)+".png")
-        plt.close()
-        # Log the plot as artifact
-        mlflow.log_artifact("accuracy_plot_"+str(i)+".png")
-        """
-
-
-
+            mlflow.log_metric(str(i)+" Percentage Data Poisoning", row["accuracy"], step=int(row["epoch"]))
