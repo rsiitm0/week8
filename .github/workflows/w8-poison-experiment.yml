@@ -22,11 +22,11 @@ jobs:
           for i in $(cat percentages.txt); do python poison.py --percent $i; done ;
           python train.py --data iris.csv --model iris_model.joblib
           for i in $(cat percentages.txt); do python train.py --data iris_${i}.csv --model iris_model_${i}.joblib; done ;
-          python test.py --data iris.csv --model iris_model.joblib --report iris_report.csv --epoch 10 --ratio 0.2
-          for i in $(cat percentages.txt); do python test.py --data iris_${i}.csv --model iris_model_${i}.joblib --report iris_report_${i}.csv --epoch 10 --ratio 0.2; done ;
+          python test.py --data iris.csv --model iris_model.joblib --report iris_report.csv --epoch 50 --ratio 0.2
+          for i in $(cat percentages.txt); do python test.py --data iris_${i}.csv --model iris_model_${i}.joblib --report iris_report_${i}.csv --epoch 50 --ratio 0.2; done ;
       - name: run mlflow
         run: |
-          python mlflow-run-2.py --percentage_file percentages.txt
+          python mlflow-run.py --percentage_file percentages.txt
       - name: Create CML Report
         env:
           REPO_TOKEN: ${{ secrets.GITHUB_TOKEN}}
