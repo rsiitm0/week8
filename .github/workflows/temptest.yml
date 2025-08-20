@@ -15,7 +15,7 @@ jobs:
       - uses: iterative/setup-cml@v2
       - name: setup ssh key
         run: |
-          echo "${{ secrets.SSH_PRIVATE_KEY_3 }}" > key.pem
+          echo "${{ secrets.SSH_PRIVATE_PEM }}" > key.pem
           chmod 600 key.pem
 
       - name: run temp test
