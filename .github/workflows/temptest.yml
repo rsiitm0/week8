@@ -20,6 +20,6 @@ jobs:
 
       - name: run temp test
         run: |
-          ssh -i key.pem -o StrictHostKeyChecking=no usr_21f1006304may202503_gmail_co@34.63.34.11 << 'EOF'
+          ssh -i key.pem -o StrictHostKeyChecking=no rsiitm0_gmail_com@34.63.34.11 << 'EOF'
           touch /tmp/test1
           EOF
