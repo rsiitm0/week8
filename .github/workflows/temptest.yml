@@ -1,0 +1,25 @@
+name: temptest-experiment
+on:
+  push
+permissions:
+  contents: write
+  pull-requests: write
+jobs:
+  temptest-experiment:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: "3.9"      
+      - uses: iterative/setup-cml@v2
+      - name: setup ssh key
+        run: |
+          echo "${{ secrets.SSH_PRIVATE_KEY_3 }}" > key.pem
+          chmod 600 key.pem
+
+      - name: run temp test
+        run: |
+          ssh -i key.pem -o StrictHostKeyChecking=no usr_21f1006304may202503_gmail_co@34.63.34.11 << 'EOF'
+          touch /tmp/test1
+          EOF
