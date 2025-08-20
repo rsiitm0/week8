@@ -1,6 +1,6 @@
 name: temptest-experiment
 on:
-  push
+  workflow_dispatch
 permissions:
   contents: write
   pull-requests: write
